@@ -1,0 +1,62 @@
+# Deployment for ApplicationA
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: coco-model
+  labels:
+    app: coco-model
+spec:
+  replicas: 5
+  selector:
+    matchLabels:
+      app: coco-model
+  template:
+    metadata:
+      labels:
+        app: coco-model
+    spec:
+      containers:
+      - name: torchserve
+        image: "{{ .Values.image.cocoModel.repository }}:{{ .Values.image.cocoModel.tag }}"
+        imagePullPolicy: Never
+        ports:
+        {{- range .Values.service.ports }}
+        - containerPort: {{ .targetPort }}
+        {{- end }}
+        resources:
+          limits:
+            {{- toYaml .Values.resources.limits | nindent 12 }}
+          requests:
+            {{- toYaml .Values.resources.requests | nindent 12 }}
+
+---
+# Deployment for ApplicationB
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: wildlife-model
+  labels:
+    app: wildlife-model
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: wildlife-model
+  template:
+    metadata:
+      labels:
+        app: wildlife-model
+    spec:
+      containers:
+      - name: torchserve
+        image: "{{ .Values.image.wildlifeModel.repository }}:{{ .Values.image.wildlifeModel.tag }}"
+        imagePullPolicy: Never
+        ports:
+        {{- range .Values.service.ports }}
+        - containerPort: {{ .targetPort }}
+        {{- end }}
+        resources:
+          limits:
+            {{- toYaml .Values.resources.limits | nindent 12 }}
+          requests:
+            {{- toYaml .Values.resources.requests | nindent 12 }}

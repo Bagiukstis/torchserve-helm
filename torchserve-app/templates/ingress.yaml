@@ -1,0 +1,80 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: torchserve-ingress
+spec:
+  rules:
+  - host: "torchserve.local"  # Replace with custom domain or IP-based access
+    http:
+      paths:
+      # Predictions for coco-model
+      - path: /predictions/coco-model
+        pathType: Prefix
+        backend:
+          service:
+            name: coco-model
+            port:
+              number: 8080
+
+      # Predictions for wildlife-model
+      - path: /predictions/wildlife-model
+        pathType: Prefix
+        backend:
+          service:
+            name: wildlife-model
+            port:
+              number: 8080
+
+      # Ping endpoint for coco-model
+      - path: /ping
+        pathType: Prefix
+        backend:
+          service:
+            name: coco-model
+            port:
+              number: 8080
+
+      # Ping endpoint for wildlife-model
+      - path: /ping
+        pathType: Prefix
+        backend:
+          service:
+            name: wildlife-model
+            port:
+              number: 8080
+
+      # Model management API for coco-model
+      - path: /models/coco-model
+        pathType: Prefix
+        backend:
+          service:
+            name: coco-model
+            port:
+              number: 8081
+
+      # Model management API for wildlife-model
+      - path: /models/wildlife-model
+        pathType: Prefix
+        backend:
+          service:
+            name: wildlife-model
+            port:
+              number: 8081
+
+      # Metrics for coco-model
+      - path: /metrics/coco-model
+        pathType: Prefix
+        backend:
+          service:
+            name: coco-model
+            port:
+              number: 8082
+
+      # Metrics for wildlife-model
+      - path: /metrics/wildlife-model
+        pathType: Prefix
+        backend:
+          service:
+            name: wildlife-model
+            port:
+              number: 8082
